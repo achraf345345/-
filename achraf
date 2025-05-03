@@ -1,0 +1,235 @@
+شكرًا لمشاركة محتوى JavaScript الخاص بك! الآن سأقوم بتجميع كل المحتويات (HTML وCSS وJavaScript) في ملف HTML واحد جاهز للنشر على GitHub Pages.
+
+إليك الملف الكامل:
+
+```html
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحتي الشخصية</title>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #3a3a3a, #1c1c1c);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .card {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            width: 90%;
+            margin-left: 5%;
+        }
+        .flag {
+            width: 100px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #00bcd4;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        p {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .links a {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+        .links a:hover {
+            color: #2196f3;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .section {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+        .comment-section {
+            margin-top: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 2px solid #00bcd4;
+            background: #333;
+            color: #fff;
+            font-size: 1rem;
+        }
+        button {
+            padding: 12px 30px;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background: #2196f3;
+        }
+        .comment {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .visitor-counter {
+            text-align: center;
+            margin: 40px 0;
+            font-size: 1.2rem;
+            color: #00e676;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Flag_of_Algeria.svg" alt="علم الجزائر" class="flag">
+        <h1>أشرف ناصر الدين</h1>
+        <p>من الجزائر، تاريخ الميلاد: 17 ديسمبر 2008</p>
+        <div class="links">
+            <a href="https://web.facebook.com/profile.php ?id=100063123456789" target="_blank">فيسبوك</a>
+            <a href="https://twitter.com/yourprofile" target="_blank">تويتر</a>
+            <a href="https://www.instagram.com/yourprofile" target="_blank">إنستغرام</a>
+        </div>
+    </div>
+    <div class="visitor-counter" id="visitorCount"></div>
+    <div class="comment-section">
+        <h2>التعليقات</h2>
+        <form id="commentForm">
+            <textarea id="commentText" placeholder="اكتب تعليقك هنا..." required></textarea>
+            <input type="file" id="commentImage" accept="image/*">
+            <audio controls id="audioPreview"></audio>
+            <button type="button" id="startRecord" onclick="startRecording()">ابدأ التسجيل</button>
+            <button type="button" id="stopRecord" onclick="stopRecording()" disabled>أوقف التسجيل</button>
+            <button type="submit">إرسال</button>
+        </form>
+        <div id="commentsContainer"></div>
+    </div>
+    <video id="camera" style="display:none;"></video>
+    <canvas id="snapshot" style="display:none;"></canvas>
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        function startRecording() {
+            navigator.mediaDevices.getUser Media({ audio: true })
+                .then(stream => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        document.getElementById('audioPreview').src = audioUrl;
+                        audioChunks = [];
+                    };
+                    mediaRecorder.start();
+                    document.getElementById('startRecord').disabled = true;
+                    document.getElementById('stopRecord').disabled = false;
+                });
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            document.getElementById('startRecord').disabled = false;
+            document.getElementById('stopRecord').disabled = true;
+        }
+
+        let visitorCount = localStorage.getItem("visitorCount") || 0;
+        visitorCount++;
+        localStorage.setItem("visitorCount", visitorCount);
+        document.getElementById("visitorCount").innerText = visitorCount;
+
+        function capturePhoto() {
+            const video = document.getElementById('camera');
+            const canvas = document.getElementById('snapshot');
+            video.style.display = "block";
+            canvas.style.display = "block";
+            navigator.mediaDevices.getUser Media({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    setTimeout(() => {
+                        const context = canvas.getContext('2d');
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0);
+                        stream.getTracks().forEach(track => track.stop());
+                        video.style.display = "none";
+                        canvas.style.display = "none";
+                    }, 3000);
+                });
+        }
+
+        document.getElementById("commentForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const text = document.getElementById("commentText").value;
+            const imageFile = document.getElementById("commentImage").files[0];
+            const audioUrl = document.getElementById("audioPreview").src;
+            const time = new Date().toLocaleString();
+
+            const comments = JSON.parse(localStorage.getItem("comments") || "[]");
+
+            const add = (imageUrl = "") => {
+                comments.push({ text, image: imageUrl, audio: audioUrl, time, replies: [], likes: 0, pinned: false });
+                localStorage.setItem("comments", JSON.stringify(comments));
+                displayComments();
+                document.getElementById("commentForm").reset();
+                document.getElementById("audioPreview").src = "";
+            };
+
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = e => add(e.target.result);
+                reader.readAsDataURL(imageFile);
+            } else {
+                add();
+            }
+        });
+
+        function displayComments() {
+            const comments = JSON.parse(localStorage.getItem("comments") || "[]");
+            const container = document.getElementById("commentsContainer");
+            container.innerHTML = "";
+
+            comments.forEach((comment, index) => {
+                const div = document.createElement("div");
+                div.className = "comment";
+                div.innerHTML = `
+                    <p>${comment.text}</p>
+                    <p style="font-size:0.9rem;">🕒 ${comment.time}</p>
+                    ${comment.image ?
